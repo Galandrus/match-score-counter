@@ -1,32 +1,43 @@
 package src
 
 import (
+	"cestoballCounter/src/controllers"
+	guimodels "cestoballCounter/src/guiModels"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 )
 
-func CreateMainTab(game *Game) fyne.CanvasObject {
-	mainDisplay := CreateMainDisplay(game)
-	controlPanel := CreateControlPanel(game)
+func CreateMainTab(gameController *controllers.GameController) fyne.CanvasObject {
+	mainDisplay := CreateMainDisplay(gameController)
+	controlPanel := CreateControlPanel(gameController)
 	return container.NewHSplit(mainDisplay, controlPanel)
 }
 
-func CreateMainDisplay(game *Game) fyne.CanvasObject {
-	title := NewDefaultText("MARCADOR", 40)
+func CreateMainDisplay(gameController *controllers.GameController) fyne.CanvasObject {
+	title := guimodels.NewDefaultText("MARCADOR", 40)
 
-	homeScoreDisplay := game.HomeTeam.TeamContainer
-	awayScoreDisplay := game.AwayTeam.TeamContainer
+	homeTeamGui := gameController.GetHomeTeamGui()
+	awayTeamGui := gameController.GetAwayTeamGui()
+	clockGui := gameController.GetClockGui()
+
+	homeScoreDisplay := homeTeamGui.TeamContainer
+	awayScoreDisplay := awayTeamGui.TeamContainer
 
 	scoresArea := container.NewHBox(homeScoreDisplay, layout.NewSpacer(), awayScoreDisplay)
-	mainBox := container.NewVBox(title, scoresArea, layout.NewSpacer(), game.Clock.Container, layout.NewSpacer())
+	mainBox := container.NewVBox(title, scoresArea, layout.NewSpacer(), clockGui.Container, layout.NewSpacer())
 	return mainBox
 }
 
-func CreateControlPanel(game *Game) fyne.CanvasObject {
-	clockLabel := NewDefaultText("CONTROL PANEL", 50)
+func CreateControlPanel(gameController *controllers.GameController) fyne.CanvasObject {
+	clockLabel := guimodels.NewDefaultText("CONTROL PANEL", 50)
 
-	scoreButtons := container.NewHBox(layout.NewSpacer(), game.HomeTeam.ScoreButtons, layout.NewSpacer(), game.AwayTeam.ScoreButtons, layout.NewSpacer())
+	homeTeamGui := gameController.GetHomeTeamGui()
+	awayTeamGui := gameController.GetAwayTeamGui()
+	clockGui := gameController.GetClockGui()
 
-	return container.NewVBox(clockLabel, game.Clock.ControlButtons, layout.NewSpacer(), scoreButtons, layout.NewSpacer())
+	scoreButtons := container.NewHBox(layout.NewSpacer(), homeTeamGui.ScoreButtons, layout.NewSpacer(), awayTeamGui.ScoreButtons, layout.NewSpacer())
+
+	return container.NewVBox(clockLabel, clockGui.ControlButtons, layout.NewSpacer(), scoreButtons, layout.NewSpacer())
 }

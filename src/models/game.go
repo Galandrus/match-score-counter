@@ -1,4 +1,4 @@
-package src
+package models
 
 import (
 	"time"
@@ -21,33 +21,37 @@ var DefaultGameConfig = GameConfig{
 	TimePerExtraTime: 3 * time.Minute,
 }
 
-type Team struct {
-	Name  string
-	Score int
-}
-
-func (t *Team) AddScore(score int) {
-	t.Score += score
-}
-
+// Game representa el juego con su lógica de negocio pura
 type Game struct {
-	HomeTeam TeamGuiModel
-	AwayTeam TeamGuiModel
+	HomeTeam Team
+	AwayTeam Team
 	Config   GameConfig
-	TimeLeft time.Duration
-	Clock    ClockGuiModel
+	Clock    Clock
 }
 
+// Start inicia el juego
 func (g *Game) Start() {
 	g.Clock.Start()
 }
 
+// Stop detiene el juego
+func (g *Game) Stop() {
+	g.Clock.Stop()
+}
+
+// Reset reinicia el juego
+func (g *Game) Reset() {
+	g.HomeTeam.ResetScore()
+	g.AwayTeam.ResetScore()
+	g.Clock.Reset()
+}
+
+// NewGame crea una nueva instancia del juego
 func NewGame() *Game {
 	return &Game{
-		HomeTeam: NewTeamGuiModel(Team{Name: "Local", Score: 0}),
-		AwayTeam: NewTeamGuiModel(Team{Name: "Visita", Score: 0}),
+		HomeTeam: Team{Name: "Local", Score: 0},
+		AwayTeam: Team{Name: "Visita", Score: 0},
 		Config:   DefaultGameConfig,
-		TimeLeft: DefaultGameConfig.TimePerQuarter,
-		Clock:    NewClockGuiModel(DefaultGameConfig.TimePerQuarter),
+		Clock:    Clock{TimeLeft: DefaultGameConfig.TimePerQuarter},
 	}
 }
