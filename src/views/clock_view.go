@@ -1,6 +1,7 @@
 package views
 
 import (
+	guimodels "cestoballCounter/src/guiModels"
 	"cestoballCounter/src/viewmodels"
 	"fmt"
 	"time"
@@ -18,7 +19,7 @@ type ClockView struct {
 	GameViewModel  *viewmodels.GameViewModel
 	Container      *fyne.Container
 	TimeLabel      *canvas.Text
-	TimeLabelRest  *canvas.Text
+	QuarterLabel   *canvas.Text
 	ControlButtons *fyne.Container
 }
 
@@ -30,42 +31,31 @@ func NewClockView(viewModel *viewmodels.ClockViewModel, gameViewModel *viewmodel
 	}
 
 	// Crear elementos de la UI
-	clockLabel := canvas.NewText("RELOJ", nil)
-	clockLabel.TextSize = 40
-	clockLabel.Alignment = fyne.TextAlignCenter
-
-	timeLabel := canvas.NewText(formatTime(viewModel.GetTimeLeft()), nil)
-	timeLabel.TextSize = 80
-	timeLabel.Alignment = fyne.TextAlignCenter
-
-	timeLabelRest := canvas.NewText("00:00.00", nil)
-	timeLabelRest.TextSize = 50
-	timeLabelRest.Alignment = fyne.TextAlignCenter
+	quarterLabel := guimodels.NewDefaultText(getQuarterText(viewModel.GetQuarter()), 40)
+	timeLabel := guimodels.NewDefaultText(formatTime(viewModel.GetTimeLeft()), 80)
 
 	clockView.TimeLabel = timeLabel
-	clockView.TimeLabelRest = timeLabelRest
+	clockView.QuarterLabel = quarterLabel
 
 	// Crear contenedor principal
-	clockContainer := container.NewVBox(clockLabel, layout.NewSpacer(), timeLabel, layout.NewSpacer(), timeLabelRest)
+	clockContainer := container.NewVBox(quarterLabel, layout.NewSpacer(), timeLabel, layout.NewSpacer())
 	clockView.Container = clockContainer
 
 	// Crear botones de control
-	startButton := widget.NewButton("START", func() {
+	startButton := widget.NewButton("Iniciar Tiempo", func() {
 		viewModel.Start()
 	})
-	stopButton := widget.NewButton("STOP", func() {
+	stopButton := widget.NewButton("Detener Tiempo", func() {
 		viewModel.Stop()
 	})
-	resetButton := widget.NewButton("RESET", func() {
+	resetButton := widget.NewButton("Reiniciar Tiempo", func() {
 		viewModel.Reset()
 	})
 
-	controlButtonsLabel := canvas.NewText("RELOJ", nil)
-	controlButtonsLabel.TextSize = 30
-	controlButtonsLabel.Alignment = fyne.TextAlignCenter
+	controlButtonsLabel := guimodels.NewDefaultText("TIEMPO", 30)
 
 	controlButtons := container.NewHBox(layout.NewSpacer(), startButton, layout.NewSpacer(), stopButton, layout.NewSpacer(), resetButton, layout.NewSpacer())
-	controlButtonsContainer := container.NewVBox(controlButtonsLabel, controlButtons)
+	controlButtonsContainer := container.NewVBox(controlButtonsLabel, controlButtons, layout.NewSpacer())
 	clockView.ControlButtons = controlButtonsContainer
 
 	// Configurar data binding automático
@@ -81,6 +71,13 @@ func (c *ClockView) setupDataBinding() {
 		duration := value.(time.Duration)
 		c.TimeLabel.Text = formatTime(duration)
 		c.TimeLabel.Refresh()
+	})
+
+	// Binding para el tiempo actual
+	c.ViewModel.Quarter.Subscribe(func(value interface{}) {
+		quarter := value.(int)
+		c.QuarterLabel.Text = getQuarterText(quarter)
+		c.QuarterLabel.Refresh()
 	})
 
 	// Binding para el estado del reloj
@@ -103,6 +100,11 @@ func (c *ClockView) GetControlButtons() *fyne.Container {
 	return c.ControlButtons
 }
 
+// GetDisplayContainer retorna solo el contenedor de visualización (sin controles)
+func (c *ClockView) GetDisplayContainer() *fyne.Container {
+	return c.Container
+}
+
 // formatTime formatea el tiempo en formato MM:SS.mm
 func formatTime(d time.Duration) string {
 	totalSeconds := int(d.Seconds())
@@ -110,4 +112,16 @@ func formatTime(d time.Duration) string {
 	seconds := totalSeconds % 60
 	milliseconds := int(d.Milliseconds()) % 1000 / 10 // Obtener centésimas de segundo
 	return fmt.Sprintf("%02d:%02d.%02d", minutes, seconds, milliseconds)
+}
+
+// getQuarterText retorna el texto del tiempo actual
+func getQuarterText(quarter int) string {
+	switch quarter {
+	case 1:
+		return "PRIMER TIEMPO"
+	case 2:
+		return "SEGUNDO TIEMPO"
+	default:
+		return "FIN DEL JUEGO"
+	}
 }

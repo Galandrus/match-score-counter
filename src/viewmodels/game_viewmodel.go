@@ -57,6 +57,12 @@ func NewGameViewModel() *GameViewModel {
 		gameVM.Clock.Start()
 	})
 
+	// Configurar callback para cuando termina un tiempo
+	gameVM.Clock.SetOnQuarterFinished(func() {
+		// Cuando termina un tiempo, avanzar al siguiente
+		gameVM.Clock.NextQuarter()
+	})
+
 	return gameVM
 }
 
@@ -73,16 +79,18 @@ func NewGameViewModelWithConfig(config GameConfig) *GameViewModel {
 
 	// Configurar callback para cuando termina el descanso
 	gameVM.RestClock.SetOnRestFinished(func() {
-		// Cuando termina el descanso, reiniciar el reloj principal
-		gameVM.Clock.Reset()
-		gameVM.Clock.Start()
+		gameVM.RestClock.Reset()
 	})
 
 	// Configurar callback para cuando termina el TimeOut
 	gameVM.TimeOutClock.SetOnTimeOutFinished(func() {
-		// Cuando termina el TimeOut, reiniciar el reloj principal
-		gameVM.Clock.Reset()
-		gameVM.Clock.Start()
+		gameVM.TimeOutClock.Reset()
+	})
+
+	// Configurar callback para cuando termina un tiempo
+	gameVM.Clock.SetOnQuarterFinished(func() {
+		// Cuando termina un tiempo, avanzar al siguiente
+		gameVM.Clock.NextQuarter()
 	})
 
 	return gameVM
@@ -192,4 +200,19 @@ func (g *GameViewModel) IsTimeOutRunning() bool {
 // IsTimeOutStopped retorna si el reloj de TimeOut está detenido
 func (g *GameViewModel) IsTimeOutStopped() bool {
 	return g.TimeOutClock.IsStopped.Get()
+}
+
+// GetCurrentQuarter retorna el tiempo actual
+func (g *GameViewModel) GetCurrentQuarter() int {
+	return g.Clock.GetQuarter()
+}
+
+// NextQuarter avanza al siguiente tiempo
+func (g *GameViewModel) NextQuarter() {
+	g.Clock.NextQuarter()
+}
+
+// IsGameFinished retorna si el juego ha terminado
+func (g *GameViewModel) IsGameFinished() bool {
+	return g.Clock.IsGameFinished()
 }

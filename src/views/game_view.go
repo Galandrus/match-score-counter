@@ -5,7 +5,6 @@ import (
 	"cestoballCounter/src/viewmodels"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 )
@@ -33,7 +32,7 @@ func NewGameView(viewModel *viewmodels.GameViewModel) *GameView {
 	gameView.AwayTeam = NewTeamView(viewModel.AwayTeam)
 	gameView.Clock = NewClockView(viewModel.Clock, viewModel)
 	gameView.RestClock = NewRestClockView(viewModel.RestClock)
-	gameView.TimeOutClock = NewTimeOutClockView(viewModel.TimeOutClock)
+	gameView.TimeOutClock = NewTimeOutClockView(viewModel.TimeOutClock, viewModel)
 
 	// Crear contenedor principal
 	gameView.MainContainer = gameView.createMainContainer()
@@ -45,9 +44,7 @@ func NewGameView(viewModel *viewmodels.GameViewModel) *GameView {
 // createMainContainer crea el contenedor principal de la interfaz
 func (g *GameView) createMainContainer() fyne.CanvasObject {
 	// Título principal
-	title := canvas.NewText("MARCADOR", nil)
-	title.TextSize = 40
-	title.Alignment = fyne.TextAlignCenter
+	title := guimodels.NewDefaultText("MARCADOR", 40)
 
 	// Área de puntuaciones
 	homeScoreDisplay := g.HomeTeam.GetTeamContainer()
@@ -61,9 +58,9 @@ func (g *GameView) createMainContainer() fyne.CanvasObject {
 		layout.NewSpacer(),
 		g.Clock.GetContainer(),
 		layout.NewSpacer(),
-		g.RestClock.GetContainer(),
-		layout.NewSpacer(),
 		g.TimeOutClock.GetContainer(),
+		layout.NewSpacer(),
+		g.RestClock.GetContainer(),
 		layout.NewSpacer(),
 	)
 
@@ -94,9 +91,9 @@ func (g *GameView) createControlPanel() fyne.CanvasObject {
 		controlLabel,
 		clockControlButtons,
 		layout.NewSpacer(),
-		restClockControlButtons,
-		layout.NewSpacer(),
 		timeOutClockControlButtons,
+		layout.NewSpacer(),
+		restClockControlButtons,
 		layout.NewSpacer(),
 		scoreButtons,
 		layout.NewSpacer(),

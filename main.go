@@ -18,15 +18,8 @@ func main() {
 	windowControl := myApp.NewWindow("Cestoball Score Control")
 	window.Resize(fyne.NewSize(1000, 700))
 
-	// Crear el ViewModel principal
 	gameViewModel := viewmodels.NewGameViewModel()
-
-	// Crear la vista principal
 	gameView := views.NewGameView(gameViewModel)
-
-	// TODO: Pestaña 2: Configuración
-	// configTab := views.NewConfigView(gameViewModel)
-	// tabs.Append(container.NewTabItem("Configuración", configTab))
 
 	window.SetContent(gameView.GetMainContainer())
 	windowControl.SetContent(gameView.GetControlContainer())
@@ -34,6 +27,5 @@ func main() {
 	window.Show()
 	windowControl.Show()
 
-	window.ShowAndRun()
-	// windowControl.ShowAndRun()
+	myApp.Run()
 }

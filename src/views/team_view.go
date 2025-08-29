@@ -1,6 +1,7 @@
 package views
 
 import (
+	guimodels "cestoballCounter/src/guiModels"
 	"cestoballCounter/src/viewmodels"
 	"strconv"
 
@@ -26,13 +27,9 @@ func NewTeamView(viewModel *viewmodels.TeamViewModel) *TeamView {
 	}
 
 	// Crear elementos de la UI
-	teamLabel := canvas.NewText(viewModel.GetName(), nil)
-	teamLabel.TextSize = 40
-	teamLabel.Alignment = fyne.TextAlignCenter
+	teamLabel := guimodels.NewDefaultText(viewModel.GetName(), 40)
 
-	scoreLabel := canvas.NewText(strconv.Itoa(viewModel.GetScore()), nil)
-	scoreLabel.TextSize = 40
-	scoreLabel.Alignment = fyne.TextAlignCenter
+	scoreLabel := guimodels.NewDefaultText(strconv.Itoa(viewModel.GetScore()), 60)
 
 	teamView.TeamLabel = teamLabel
 	teamView.ScoreLabel = scoreLabel

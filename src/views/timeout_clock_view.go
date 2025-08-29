@@ -1,6 +1,7 @@
 package views
 
 import (
+	guimodels "cestoballCounter/src/guiModels"
 	"cestoballCounter/src/viewmodels"
 	"fmt"
 	"time"
@@ -15,38 +16,37 @@ import (
 // TimeOutClockView representa la vista del reloj de TimeOut con data binding automático
 type TimeOutClockView struct {
 	ViewModel      *viewmodels.TimeOutClockViewModel
+	GameViewModel  *viewmodels.GameViewModel
 	Container      *fyne.Container
 	TimeLabel      *canvas.Text
 	ControlButtons *fyne.Container
 }
 
 // NewTimeOutClockView crea una nueva vista del reloj de TimeOut con data binding automático
-func NewTimeOutClockView(viewModel *viewmodels.TimeOutClockViewModel) *TimeOutClockView {
+func NewTimeOutClockView(viewModel *viewmodels.TimeOutClockViewModel, gameViewModel *viewmodels.GameViewModel) *TimeOutClockView {
 	timeOutClockView := &TimeOutClockView{
-		ViewModel: viewModel,
+		ViewModel:     viewModel,
+		GameViewModel: gameViewModel,
 	}
 
 	// Crear elementos de la UI
-	timeOutLabel := canvas.NewText("Minuto", nil)
-	timeOutLabel.TextSize = 30
-	timeOutLabel.Alignment = fyne.TextAlignCenter
+	timeOutLabel := guimodels.NewDefaultText("Minuto", 30)
 
-	timeLabel := canvas.NewText(formatTimeOutTime(viewModel.GetTimeLeft()), nil)
-	timeLabel.TextSize = 60
-	timeLabel.Alignment = fyne.TextAlignCenter
+	timeLabel := guimodels.NewDefaultText(formatTimeOutTime(viewModel.GetTimeLeft()), 40)
 
 	timeOutClockView.TimeLabel = timeLabel
 
 	// Crear contenedor principal
-	timeOutContainer := container.NewVBox(timeOutLabel, layout.NewSpacer(), timeLabel, layout.NewSpacer())
+	timeOutContainer := container.NewHBox(timeOutLabel, layout.NewSpacer(), timeLabel, layout.NewSpacer())
 	timeOutClockView.Container = timeOutContainer
 
 	// Crear botones de control
 	startTimeOutButton := widget.NewButton("Iniciar Minuto", func() {
-		viewModel.Start()
+		gameViewModel.StartTimeOut()
 	})
 	stopTimeOutButton := widget.NewButton("Detener Minuto", func() {
-		viewModel.Stop()
+		gameViewModel.StopTimeOut()
+		viewModel.Reset()
 	})
 	resetTimeOutButton := widget.NewButton("Reiniciar Minuto", func() {
 		viewModel.Reset()
@@ -61,7 +61,8 @@ func NewTimeOutClockView(viewModel *viewmodels.TimeOutClockViewModel) *TimeOutCl
 		resetTimeOutButton,
 		layout.NewSpacer(),
 	)
-	timeOutClockView.ControlButtons = controlButtons
+	controlButtonsLabel := guimodels.NewDefaultText("MINUTO", 30)
+	timeOutClockView.ControlButtons = container.NewVBox(controlButtonsLabel, controlButtons, layout.NewSpacer())
 
 	// Configurar data binding automático
 	timeOutClockView.setupDataBinding()
@@ -96,6 +97,11 @@ func (t *TimeOutClockView) GetContainer() *fyne.Container {
 // GetControlButtons retorna los botones de control
 func (t *TimeOutClockView) GetControlButtons() *fyne.Container {
 	return t.ControlButtons
+}
+
+// GetDisplayContainer retorna solo el contenedor de visualización (sin controles)
+func (t *TimeOutClockView) GetDisplayContainer() *fyne.Container {
+	return t.Container
 }
 
 // formatTimeOutTime formatea el tiempo en formato MM:SS.mm

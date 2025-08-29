@@ -1,6 +1,7 @@
 package views
 
 import (
+	guimodels "cestoballCounter/src/guiModels"
 	"cestoballCounter/src/viewmodels"
 	"fmt"
 	"time"
@@ -27,18 +28,13 @@ func NewRestClockView(viewModel *viewmodels.RestClockViewModel) *RestClockView {
 	}
 
 	// Crear elementos de la UI
-	restLabel := canvas.NewText("Entre Tiempo", nil)
-	restLabel.TextSize = 30
-	restLabel.Alignment = fyne.TextAlignCenter
-
-	timeLabel := canvas.NewText(formatRestTime(viewModel.GetTimeLeft()), nil)
-	timeLabel.TextSize = 60
-	timeLabel.Alignment = fyne.TextAlignCenter
+	restLabel := guimodels.NewDefaultText("Entre Tiempo", 30)
+	timeLabel := guimodels.NewDefaultText(formatRestTime(viewModel.GetTimeLeft()), 40)
 
 	restClockView.TimeLabel = timeLabel
 
 	// Crear contenedor principal
-	restContainer := container.NewVBox(restLabel, layout.NewSpacer(), timeLabel, layout.NewSpacer())
+	restContainer := container.NewHBox(restLabel, layout.NewSpacer(), timeLabel, layout.NewSpacer())
 	restClockView.Container = restContainer
 
 	// Crear botones de control
@@ -61,7 +57,8 @@ func NewRestClockView(viewModel *viewmodels.RestClockViewModel) *RestClockView {
 		resetRestButton,
 		layout.NewSpacer(),
 	)
-	restClockView.ControlButtons = controlButtons
+	controlButtonsLabel := guimodels.NewDefaultText("DESCANSO", 30)
+	restClockView.ControlButtons = container.NewVBox(controlButtonsLabel, controlButtons, layout.NewSpacer())
 
 	// Configurar data binding automático
 	restClockView.setupDataBinding()
@@ -96,6 +93,11 @@ func (r *RestClockView) GetContainer() *fyne.Container {
 // GetControlButtons retorna los botones de control
 func (r *RestClockView) GetControlButtons() *fyne.Container {
 	return r.ControlButtons
+}
+
+// GetDisplayContainer retorna solo el contenedor de visualización (sin controles)
+func (r *RestClockView) GetDisplayContainer() *fyne.Container {
+	return r.Container
 }
 
 // formatRestTime formatea el tiempo en formato MM:SS.mm
