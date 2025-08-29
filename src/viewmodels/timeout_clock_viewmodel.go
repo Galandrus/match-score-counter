@@ -43,7 +43,7 @@ func (t *TimeOutClockViewModel) Start() {
 	t.IsStopped.Set(false)
 
 	// Usar un ticker para mayor precisión
-	t.ticker = time.NewTicker(20 * time.Millisecond)
+	t.ticker = time.NewTicker(50 * time.Millisecond)
 	go func() {
 		defer t.ticker.Stop()
 

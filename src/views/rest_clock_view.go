@@ -27,7 +27,7 @@ func NewRestClockView(viewModel *viewmodels.RestClockViewModel) *RestClockView {
 	}
 
 	// Crear elementos de la UI
-	restLabel := canvas.NewText("DESCANSO", nil)
+	restLabel := canvas.NewText("Entre Tiempo", nil)
 	restLabel.TextSize = 30
 	restLabel.Alignment = fyne.TextAlignCenter
 
@@ -42,13 +42,13 @@ func NewRestClockView(viewModel *viewmodels.RestClockViewModel) *RestClockView {
 	restClockView.Container = restContainer
 
 	// Crear botones de control
-	startRestButton := widget.NewButton("INICIAR DESCANSO", func() {
+	startRestButton := widget.NewButton("Iniciar Entre Tiempo", func() {
 		viewModel.Start()
 	})
-	stopRestButton := widget.NewButton("TERMINAR DESCANSO", func() {
+	stopRestButton := widget.NewButton("Detener Descanso", func() {
 		viewModel.Stop()
 	})
-	resetRestButton := widget.NewButton("RESET", func() {
+	resetRestButton := widget.NewButton("Reiniciar Entre Tiempo", func() {
 		viewModel.Reset()
 	})
 

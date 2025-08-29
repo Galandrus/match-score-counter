@@ -27,7 +27,7 @@ func NewTimeOutClockView(viewModel *viewmodels.TimeOutClockViewModel) *TimeOutCl
 	}
 
 	// Crear elementos de la UI
-	timeOutLabel := canvas.NewText("TIMEOUT", nil)
+	timeOutLabel := canvas.NewText("Minuto", nil)
 	timeOutLabel.TextSize = 30
 	timeOutLabel.Alignment = fyne.TextAlignCenter
 
@@ -42,13 +42,13 @@ func NewTimeOutClockView(viewModel *viewmodels.TimeOutClockViewModel) *TimeOutCl
 	timeOutClockView.Container = timeOutContainer
 
 	// Crear botones de control
-	startTimeOutButton := widget.NewButton("INICIAR TIMEOUT", func() {
+	startTimeOutButton := widget.NewButton("Iniciar Minuto", func() {
 		viewModel.Start()
 	})
-	stopTimeOutButton := widget.NewButton("TERMINAR TIMEOUT", func() {
+	stopTimeOutButton := widget.NewButton("Detener Minuto", func() {
 		viewModel.Stop()
 	})
-	resetTimeOutButton := widget.NewButton("RESET", func() {
+	resetTimeOutButton := widget.NewButton("Reiniciar Minuto", func() {
 		viewModel.Reset()
 	})
 

@@ -1,6 +1,7 @@
 package views
 
 import (
+	guimodels "cestoballCounter/src/guiModels"
 	"cestoballCounter/src/viewmodels"
 
 	"fyne.io/fyne/v2"
@@ -11,13 +12,14 @@ import (
 
 // GameView representa la vista principal del juego
 type GameView struct {
-	ViewModel    *viewmodels.GameViewModel
-	HomeTeam     *TeamView
-	AwayTeam     *TeamView
-	Clock        *ClockView
-	RestClock    *RestClockView
-	TimeOutClock *TimeOutClockView
-	Container    fyne.CanvasObject
+	ViewModel        *viewmodels.GameViewModel
+	HomeTeam         *TeamView
+	AwayTeam         *TeamView
+	Clock            *ClockView
+	RestClock        *RestClockView
+	TimeOutClock     *TimeOutClockView
+	MainContainer    fyne.CanvasObject
+	ControlContainer fyne.CanvasObject
 }
 
 // NewGameView crea una nueva vista del juego
@@ -34,7 +36,8 @@ func NewGameView(viewModel *viewmodels.GameViewModel) *GameView {
 	gameView.TimeOutClock = NewTimeOutClockView(viewModel.TimeOutClock)
 
 	// Crear contenedor principal
-	gameView.Container = gameView.createMainContainer()
+	gameView.MainContainer = gameView.createMainContainer()
+	gameView.ControlContainer = gameView.createControlPanel()
 
 	return gameView
 }
@@ -64,19 +67,12 @@ func (g *GameView) createMainContainer() fyne.CanvasObject {
 		layout.NewSpacer(),
 	)
 
-	// Panel de control
-	controlPanel := g.createControlPanel()
-
-	// Contenedor principal dividido
-	splitContainer := container.NewHSplit(mainDisplay, controlPanel)
-	return splitContainer
+	return mainDisplay
 }
 
 // createControlPanel crea el panel de control
 func (g *GameView) createControlPanel() fyne.CanvasObject {
-	controlLabel := canvas.NewText("CONTROL PANEL", nil)
-	controlLabel.TextSize = 50
-	controlLabel.Alignment = fyne.TextAlignCenter
+	controlLabel := guimodels.NewDefaultText("CONTROLES", 50)
 
 	// Botones de puntuación
 	homeScoreButtons := g.HomeTeam.GetScoreButtons()
@@ -108,11 +104,17 @@ func (g *GameView) createControlPanel() fyne.CanvasObject {
 }
 
 // GetContainer retorna el contenedor principal
-func (g *GameView) GetContainer() fyne.CanvasObject {
-	return g.Container
+func (g *GameView) GetMainContainer() fyne.CanvasObject {
+	return g.MainContainer
+}
+
+// GetControlContainer retorna el contenedor de control
+func (g *GameView) GetControlContainer() fyne.CanvasObject {
+	return g.ControlContainer
 }
 
 // Refresh actualiza toda la vista
 func (g *GameView) Refresh() {
-	g.Container.Refresh()
+	g.MainContainer.Refresh()
+	g.ControlContainer.Refresh()
 }

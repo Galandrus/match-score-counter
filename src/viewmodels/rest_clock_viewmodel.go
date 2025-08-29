@@ -43,7 +43,7 @@ func (r *RestClockViewModel) Start() {
 	r.IsStopped.Set(false)
 
 	// Usar un ticker para mayor precisión
-	r.ticker = time.NewTicker(20 * time.Millisecond)
+	r.ticker = time.NewTicker(50 * time.Millisecond)
 	go func() {
 		defer r.ticker.Stop()
 

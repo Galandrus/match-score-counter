@@ -60,27 +60,12 @@ func NewClockView(viewModel *viewmodels.ClockViewModel, gameViewModel *viewmodel
 		viewModel.Reset()
 	})
 
-	startRestButton := widget.NewButton("INICIAR DESCANSO", func() {
-		gameViewModel.StartRest()
-	})
-	stopRestButton := widget.NewButton("TERMINAR DESCANSO", func() {
-		gameViewModel.StopRest()
-	})
-	startTimeOutButton := widget.NewButton("INICIAR TIMEOUT", func() {
-		gameViewModel.StartTimeOut()
-	})
-	stopTimeOutButton := widget.NewButton("TERMINAR TIMEOUT", func() {
-		gameViewModel.StopTimeOut()
-	})
-
 	controlButtonsLabel := canvas.NewText("RELOJ", nil)
 	controlButtonsLabel.TextSize = 30
 	controlButtonsLabel.Alignment = fyne.TextAlignCenter
 
 	controlButtons := container.NewHBox(layout.NewSpacer(), startButton, layout.NewSpacer(), stopButton, layout.NewSpacer(), resetButton, layout.NewSpacer())
-	controlButtonsRest := container.NewHBox(layout.NewSpacer(), startRestButton, layout.NewSpacer(), stopRestButton, layout.NewSpacer())
-	controlButtonsTimeOut := container.NewHBox(layout.NewSpacer(), startTimeOutButton, layout.NewSpacer(), stopTimeOutButton, layout.NewSpacer())
-	controlButtonsContainer := container.NewVBox(controlButtonsLabel, controlButtons, layout.NewSpacer(), controlButtonsRest, layout.NewSpacer(), controlButtonsTimeOut)
+	controlButtonsContainer := container.NewVBox(controlButtonsLabel, controlButtons)
 	clockView.ControlButtons = controlButtonsContainer
 
 	// Configurar data binding automático
