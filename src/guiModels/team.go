@@ -64,5 +64,6 @@ func NewTeamGuiModel(team models.Team) TeamGuiModel {
 	})
 	scoreButtons := container.NewVBox(teamLabel, scoreDoubleButton, scoreTripleButton, scoreMinusButton)
 	teamGuiModel.ScoreButtons = scoreButtons
+
 	return teamGuiModel
 }

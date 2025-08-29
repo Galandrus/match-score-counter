@@ -40,7 +40,7 @@ func NewGameController() *GameController {
 
 	homeTeamGui := guimodels.NewTeamGuiModel(homeTeam)
 	awayTeamGui := guimodels.NewTeamGuiModel(awayTeam)
-	clockGui := guimodels.NewClockGuiModel(DefaultGameConfig.TimePerQuarter)
+	clockGui := guimodels.NewClockGuiModel(DefaultGameConfig.TimePerQuarter, DefaultGameConfig.TimePerTimeOut)
 
 	return &GameController{
 		homeTeamGui: &homeTeamGui,

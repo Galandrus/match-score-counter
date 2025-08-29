@@ -20,18 +20,27 @@ func (c *Clock) Start() {
 
 	c.IsRunning = true
 	c.IsStopped = false
-	for c.TimeLeft > 0 {
-		delta := 10 * time.Millisecond
-		c.UpdateTime(delta)
-		if c.onUpdate != nil {
-			c.onUpdate()
+
+	// Usar un ticker para mayor precisión - actualizar cada 50ms para mejor precisión visual
+	ticker := time.NewTicker(20 * time.Millisecond)
+	go func() {
+		defer ticker.Stop()
+
+		for c.TimeLeft > 0 {
+			<-ticker.C
+			delta := 50 * time.Millisecond
+			c.UpdateTime(delta)
+			if c.onUpdate != nil {
+				c.onUpdate()
+			}
+
+			if c.IsStopped {
+				break
+			}
 		}
-		time.Sleep(delta)
-		if c.IsStopped {
-			c.IsRunning = false
-			break
-		}
-	}
+		c.IsRunning = false
+	}()
+
 }
 
 // Stop detiene el reloj
@@ -43,7 +52,7 @@ func (c *Clock) Stop() {
 // Reset reinicia el reloj
 func (c *Clock) Reset() {
 	c.TimeLeft = c.timePerQuarter
-	c.IsStopped = false
+	c.IsStopped = true
 	c.IsRunning = false
 
 	if c.onUpdate != nil {
